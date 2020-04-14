@@ -3,8 +3,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -221,8 +224,8 @@ public class UserInterface {
         }
 //        newCustomer.setPesel(pesel);//usuniete
 
-        GregorianCalendar today = new GregorianCalendar();// dzisiejsza data
-        int thatYear = today.get(GregorianCalendar.YEAR);// pobieram rok z dzisiejszej daty
+        LocalDateTime today = LocalDateTime.now();// dzisiejsza data
+        int thatYear = today.getYear();// pobieram rok z dzisiejszej daty
 
         System.out.print("The year of birth: ");
         int year = 0;
@@ -291,7 +294,7 @@ public class UserInterface {
 //        newCustomer.setDateOfBirth(new GregorianCalendar(year, month - 1, day));//usuniete
 
         //zbieram całą datę urodzenia do jednej zmiennej
-        GregorianCalendar dateOfBirth = new GregorianCalendar(year, month - 1, day);
+        LocalDateTime dateOfBirth = LocalDateTime.of(year, month, day, 12, 00);
 
         //tworzę nowego klienta
         Customer newCustomer = new Customer(firstName, lastName, pesel, dateOfBirth);
@@ -441,25 +444,32 @@ public class UserInterface {
 
     }
 
-    public static void main(String[] args) throws JsonProcessingException {
+    public static void main(String[] args)  {
 
         Database database = new Database();
 
+        ObjectMapper objectMapper = new ObjectMapper();
 
+        // deserialization does not work
+//        try {
+//            database = objectMapper.readValue(new File("database.json"), Database.class);
+//        }catch (FileNotFoundException e){
+//            System.out.println("Creates new database");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         UserInterface UI = new UserInterface(database);
 
         UI.menu();
 
-        ObjectMapper mapper = new ObjectMapper();
-
+        //serialization, means that in the end it saves everything to database.json
         try {
-
             // Java objects to JSON file
-            mapper.writeValue(new File("database.json"), database);
+            objectMapper.writeValue(new File("database.json"), database);
 
             // Java objects to JSON string - pretty-print
-            String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(database);
+            String jsonInString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(database);
 
             System.out.println(jsonInString);
 

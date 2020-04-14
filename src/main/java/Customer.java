@@ -2,31 +2,30 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-@JsonRootName("customer")
+//@JsonRootName("customer")
 public class Customer {
 
     private String firstName;
     private String lastName;
     private String pesel;
-    private GregorianCalendar dateOfBirth;
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
+    private LocalDateTime dateOfBirth;
 
     public Customer() {
     }
 
-    //    @JsonCreator
-//    public Customer(@JsonProperty("name") String firstName,
-//                    @JsonProperty("surname") String lastName,
-//                    @JsonProperty("pesel") String pesel,
-//                    @JsonProperty("born") GregorianCalendar dateOfBirth) {
     @JsonCreator
-    public Customer(String firstName,
-                    String lastName,
-                    String pesel,
-                    GregorianCalendar dateOfBirth) {
+    public Customer(@JsonProperty("nameCustomer") String firstName,
+                    @JsonProperty("surnameCustomer") String lastName,
+                    @JsonProperty("peselCustomer") String pesel,
+                    @JsonProperty("bornCustomer") LocalDateTime dateOfBirth) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.pesel = pesel;
@@ -61,11 +60,11 @@ public class Customer {
     }
 
     @JsonGetter
-    public GregorianCalendar getDateOfBirth() {
+    public LocalDateTime getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(GregorianCalendar dateOfBirth) {
+    public void setDateOfBirth(LocalDateTime dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -73,8 +72,8 @@ public class Customer {
     public String toString() {
         String date = "not set";
         if (dateOfBirth!=null) {
-            date = dateOfBirth.get(GregorianCalendar.DAY_OF_MONTH) + "." +
-                    (dateOfBirth.get(GregorianCalendar.MONTH) + 1) + "." + dateOfBirth.get(GregorianCalendar.YEAR);
+            date = dateOfBirth.getDayOfMonth() + "." +
+                    dateOfBirth.getMonth() + "." + dateOfBirth.getYear();
         }
         return "Customer{" +
                 " firstName='" + firstName + '\'' +

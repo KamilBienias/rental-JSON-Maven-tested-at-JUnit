@@ -1,1 +1,0 @@
-latarka 2003 35 [Customer{ firstName='James', lastName='Bond', pesel='56021476586', dateOfBirth=14.2.1956}]

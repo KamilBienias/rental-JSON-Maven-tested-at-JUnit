@@ -1,12 +1,14 @@
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@JsonRootName("product")
+
+//@JsonRootName("product")
 public class Product {
 
     private String productName;
@@ -18,7 +20,10 @@ public class Product {
     }
 
     @JsonCreator
-    public Product(String productName, int yearOfProduction, int price, List<Customer> borrowers) {
+    public Product(@JsonProperty("prodName") String productName,
+                   @JsonProperty("prodYear") int yearOfProduction,
+                   @JsonProperty("prodPrice") int price,
+                   @JsonProperty("prodBorrowers") List<Customer> borrowers) {
         this.productName = productName;
         this.yearOfProduction = yearOfProduction;
         this.price = price;
